@@ -61,7 +61,6 @@ else
 fi
 
 
-echo SHOULD PUSH = ${should_push}
 if [[ ${should_push} != 0 ]]; then
     setup_git
     git_push
