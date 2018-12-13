@@ -1,0 +1,4 @@
+.gradle/
+.idea/
+criteo-marketing-sdk-generator.iml
+build/

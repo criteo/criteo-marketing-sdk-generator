@@ -1,0 +1,9 @@
+language: java
+dist: xenial
+
+script:
+  - ./gradlew buildPythonClient -Dorg.gradle.project.buildNumber=$TRAVIS_BUILD_NUMBER
+
+branches:
+  only:
+    - master
