@@ -1,9 +1,15 @@
 language: java
 dist: xenial
 
+env:
+  - secure: "blfVbUP0CdW+NC8i9NIHTttjuJ7hxAA3E9A0NoEfHirdH3whuQajqTgzFNyzknXd9tmE7srdmOMgv22fDNWqCCF6PfcraGkm6cEelEjVXKn4aqyPjjXFaiP/snnC+fd641vADq8yLt28bP1AGQlFknYPBCD60uYwTKHbIIop7KNJ1ratnsd95VmOrZQ08pNSVZ6za+XCva4ArnrTxDtcAgEaBktrPLNxRh1SeovromRRFrRb85+Z9V3p/GTIGo5jprJhlKH7388yn2I4WiLu3guEoIMH6WvmbUmWxxeMvI8WPJ2SkKCcCIcP6BwT10sU2YPii4MvumPep6zK3FrTOpnRpQUcXsyCZA9kKWnArDeMNidZs0oyRyAWtOl+RAQcct8dXhreFrvy1n8nkRyhJ+TJu0CMdvmhGixUu8KD/0UT4PHHBNbISwImtEskA6wUJNHlJOvS+ge+Szt/WOgAhn93Vzc7Sdgh6Do0wkHa758U56HIbDFNKhMEXGCZh0S0kcJwXzAnXyk/xJQ22X/g5qvy8NOLWRgWGH9iAu3HaHLH3LKoiKm2XTcwXIviizo3huYAgz8oI4ilgriYQ8tFJwzatmQIwIsGlHAd3vsflEtaayLyFtkz3fxeLLQ7//TbTtFPGxccjjyg+qUXv4qos1SD6A8PBux7y+/aVLEvrfM="
+
 script:
   - ./gradlew buildPythonClient -Dorg.gradle.project.buildNumber=$TRAVIS_BUILD_NUMBER
 
 branches:
   only:
     - master
+
+after_success:
+  - scripts/push_sdk.sh
