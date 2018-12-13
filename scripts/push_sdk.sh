@@ -32,7 +32,7 @@ git_push() {
 }
 
 
-BUILD_DIR=${HOMNE}/build
+BUILD_DIR=${HOME}/build
 
 cd ${BUILD_DIR}/criteo
 REPO=criteo/criteo-python-marketing-sdk
