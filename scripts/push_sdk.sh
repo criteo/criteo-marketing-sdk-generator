@@ -61,7 +61,7 @@ else
 fi
 
 
-if [[ ${should_push} != 0 ]]; then
+if [[ ${should_push} != 0 || -v ${FORCE_PUSH} ]]; then
     setup_git
     git_push
 else
