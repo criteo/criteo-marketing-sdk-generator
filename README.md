@@ -1,6 +1,5 @@
 # Criteo Marketing API - Python Client
-[![Build Status](https://travis-ci.com/criteo/criteo-python-marketing-sdk.svg?branch=master)](https://travis-ci.com/criteo/criteo-python-marketing-sdk)
-
+[![Build Status](https://[![Build Status](https://travis-ci.com/criteo/criteo-marketing-sdk-generator.svg?branch=master)](https://travis-ci.com/criteo/criteo-marketing-sdk-generator)
 ## Generate the client
 To generate the code under, run:
 

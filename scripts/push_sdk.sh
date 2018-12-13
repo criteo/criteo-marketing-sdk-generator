@@ -15,7 +15,7 @@ arrays_are_equal() {
 }
 
 git_clone() {
-  git clone --depth 1 https://${GH_TOKEN}@github.com/criteo/$1.git
+  git clone --depth 1 https://${GH_TOKEN}@github.com/$1.git
 }
 
 setup_git() {
@@ -31,14 +31,16 @@ git_push() {
   git push --quiet
 }
 
-cd ${TRAVIS_BUILD_DIR}
-REPO=criteo-python-marketing-sdk
-git_clone ${REPO}
-cd ${TRAVIS_BUILD_DIR}/${REPO}
 
-SLUG=(${TRAVIS_REPO_SLUG//// })
-CURRENT_REPO_NAME=${SLUG[1]}
-cp -R ${TRAVIS_BUILD_DIR}/${CURRENT_REPO_NAME}/dist/ .
+BUILD_DIR=${HOMNE}/build
+
+cd ${BUILD_DIR}/criteo
+REPO=criteo/criteo-python-marketing-sdk
+git_clone ${REPO}
+cd ${BUILD_DIR}/${REPO}
+
+
+cp -R ${TRAVIS_BUILD_DIR}/dist/ .
 
 
 # These files are always modified when the version is changed
