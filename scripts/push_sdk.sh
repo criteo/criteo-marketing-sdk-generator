@@ -11,7 +11,7 @@ setup_git() {
 }
 
 git_commit() {
-  git commit -a --message "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
+  git commit -am "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
 }
 
 git_push() {
