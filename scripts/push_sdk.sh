@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
-
-arrays_are_equal() {
-    if [[ ${#version_only[@]} == ${#changed_files[@]} ]]; then
-        for i in "${changed_files[@]}"
-        do
-           if [[ -z ${version_only["$i"]} ]]; then
-                exit 1
-           fi
-        done
-        exit 0
-    else
-        exit 1
-    fi
-}
+set -x
 
 git_clone() {
   git clone --depth 1 https://${GH_TOKEN}@github.com/$1.git
@@ -39,31 +26,15 @@ REPO=criteo/criteo-python-marketing-sdk
 git_clone ${REPO}
 cd ${BUILD_DIR}/${REPO}
 
-
 cp -R ${TRAVIS_BUILD_DIR}/dist/ .
 
+# git diff, ignore version's modifications
+modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
 
-# These files are always modified when the version is changed
-declare -A version_only=(["README.md"]="README.md"
-                         ["criteo_marketing/__init__.py"]="criteo_marketing/__init__.py"
-                         ["criteo_marketing/api_client.py"]="criteo_marketing/api_client.py"
-                         ["criteo_marketing/configuration.py"]="criteo_marketing/configuration.py"
-                         ["setup.py"]="setup.py")
-
-# git diff
-mapfile -t changed_files < <( git diff --name-only ':!*.gitignore' )
-
-if [[ ${#changed_files[@]} == 0 ]]; then
-    should_push=0
-else
-    $(arrays_are_equal)
-    should_push=$?
-fi
-
-
-if [[ ${should_push} != 0 || -v ${FORCE_PUSH} ]]; then
+if [[ ${modification_count} != 0 ]]; then
     setup_git
     git_push
 else
-    echo No push to Github
+    echo No push to Github. Modifications:
+    git diff -U0
 fi
