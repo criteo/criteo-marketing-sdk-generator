@@ -2,7 +2,7 @@
 set -x
 
 git_clone() {
-  git clone --depth 1 git@github.com:$1.git
+  git clone --depth 1 https://${GH_TOKEN}@github.com/$1.git
 }
 
 setup_git() {
