@@ -11,7 +11,7 @@ setup_git() {
 }
 
 git_commit() {
-  git commit --message "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
+  git commit -a --message "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
 }
 
 git_push() {
@@ -26,13 +26,14 @@ REPO=criteo/criteo-python-marketing-sdk
 git_clone ${REPO}
 cd ${BUILD_DIR}/${REPO}
 
-cp -R ${TRAVIS_BUILD_DIR}/dist/ .
+cp -R -v ${TRAVIS_BUILD_DIR}/dist/** .
 
 # git diff, ignore version's modifications
 modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
 
 if [[ ${modification_count} != 0 ]]; then
     setup_git
+    git_commit
     git_push
 else
     echo No push to Github. Modifications:
