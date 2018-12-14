@@ -26,7 +26,7 @@ REPO=criteo/criteo-python-marketing-sdk
 git_clone ${REPO}
 cd ${BUILD_DIR}/${REPO}
 
-cp -R -v ${TRAVIS_BUILD_DIR}/dist/** .
+cp -R ${TRAVIS_BUILD_DIR}/dist/** .
 
 # git diff, ignore version's modifications
 modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
