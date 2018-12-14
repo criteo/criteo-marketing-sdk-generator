@@ -11,5 +11,9 @@ branches:
   only:
     - master
 
-after_success:
-  - scripts/push_sdk.sh
+deploy:
+  provider: script
+  script: bash scripts/push_sdk.sh
+  on:
+    branch: master
+  skip_cleanup: true
