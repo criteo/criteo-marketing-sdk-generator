@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
-import criteo_marketing
-import pook
 import unittest
+
+import pook
+
+import criteo_marketing
 from criteo_marketing import Configuration
 from criteo_marketing.rest import ApiException
 

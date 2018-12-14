@@ -1,9 +1,10 @@
 from __future__ import print_function
 
-import criteo_marketing
 import sys
-from criteo_marketing import Configuration
 from pprint import pprint
+
+import criteo_marketing
+from criteo_marketing import Configuration
 
 GRANT_TYPE = 'client_credentials'
 
