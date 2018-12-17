@@ -87,7 +87,7 @@ openApiGenerate {
     configOptions = [
             packageName            : 'criteo_marketing',
             projectName            : 'criteo_marketing',
-            packageURL             : 'https://github.com/criteo/criteo-python-marketing-sdk',
+            packageUrl             : 'https://github.com/criteo/criteo-python-marketing-sdk',
             packageVersion         : "$apiVersion.$clientPatch".toString(),
             hideGenerationTimestamp: 'true'
     ]
