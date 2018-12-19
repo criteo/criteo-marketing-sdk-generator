@@ -4,7 +4,7 @@
 To generate the code under, run:
 
 ```bash 
-./gradlew build
+./gradlew buildPythonClient -Dorg.gradle.project.buildNumber=$TRAVIS_BUILD_NUMBER
 ```
 
 The generated code can be found under `dist` folder.
