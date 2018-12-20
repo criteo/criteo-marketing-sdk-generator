@@ -2,10 +2,13 @@
 
 {{>partial_header}}
 
+import logging
 import pprint
 import re  # noqa: F401
 
 import six
+
+logger = logging.getLogger(__name__)
 
 
 {{#models}}
@@ -110,17 +113,17 @@ class {{classname}}(object):
         allowed_values = [{{#allowableValues}}{{#values}}{{#items.isString}}"{{/items.isString}}{{{this}}}{{#items.isString}}"{{/items.isString}}{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]  # noqa: E501
 {{#isListContainer}}
         if not set({{{name}}}).issubset(set(allowed_values)):
-            print("Unknown value `{{{name}}}` [{0}]".format({{{name}}}))
+            logger.debug("Unknown value `{{{name}}}` [%s]",{{{name}}})
 {{/isListContainer}}
 {{#isMapContainer}}
         if not set({{{name}}}.keys()).issubset(set(allowed_values)):
-            print("Unknown value `{{{name}}}` [{0}]".format({{{name}}}))
+            logger.debug("Unknown value `{{{name}}}` [%s]", {{{name}}})
 {{/isMapContainer}}
 {{/isContainer}}
 {{^isContainer}}
         allowed_values = [{{#allowableValues}}{{#values}}{{#isString}}"{{/isString}}{{{this}}}{{#isString}}"{{/isString}}{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]  # noqa: E501
         if {{{name}}} not in allowed_values:
-            print("Unknown value `{{{name}}}` [{0}]".format({{{name}}}))
+            logger.debug("Unknown value `{{{name}}}` [%s]", {{{name}}})
 {{/isContainer}}
 {{/isEnum}}
 {{^isEnum}}
