@@ -10,6 +10,10 @@ setup_git() {
   git config user.name "Travis CI"
 }
 
+git_add_files() {
+  git add "**/*.py" "**/*.md"
+}
+
 git_commit() {
   git commit -am "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
 }
@@ -33,6 +37,7 @@ modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)
 
 if [[ ${modification_count} != 0 ]]; then
     setup_git
+    git_add_files
     git_commit
     git_push
 else
