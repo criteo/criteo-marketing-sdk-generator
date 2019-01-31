@@ -32,6 +32,9 @@ cd ${BUILD_DIR}/${REPO}
 
 cp -R ${TRAVIS_BUILD_DIR}/dist/** .
 
+# add files before doing the diff
+git_add_files
+
 # git diff, ignore version's modifications
 modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
 
