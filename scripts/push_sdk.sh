@@ -36,11 +36,10 @@ cp -R ${TRAVIS_BUILD_DIR}/dist/** .
 git_add_files
 
 # git diff, ignore version's modifications
-modification_count=$(git diff -U0 | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
+modification_count=$(git diff -U0 --staged | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
 
 if [[ ${modification_count} != 0 ]]; then
     setup_git
-    git_add_files
     git_commit
     git_push
 else
