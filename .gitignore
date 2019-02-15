@@ -3,3 +3,4 @@
 criteo-marketing-sdk-generator.iml
 build/
 dist/
+generated-clients/

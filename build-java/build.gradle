@@ -1,0 +1,27 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.0.0-beta2"
+    }
+}
+
+apply plugin: 'org.openapi.generator'
+
+def clientOutputDir = "$projectDir/../generated-clients/java-clients".toString()
+
+task generateClient(type: GradleBuild) {
+    group "Criteo"
+    description 'Generate the Java client using openapi-generator and custom templates'
+
+    tasks = ['openApiGenerate']
+}
+
+openApiGenerate {
+    generatorName = "java"
+    inputSpec = rootProject.swaggerURL
+    outputDir = clientOutputDir
+}
