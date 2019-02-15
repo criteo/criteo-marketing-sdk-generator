@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'criteo-marketing-sdk-generator'
+
+include 'build-python'
