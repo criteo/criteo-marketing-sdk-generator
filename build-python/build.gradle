@@ -21,7 +21,8 @@ ext {
     jar.enabled = false
 }
 
-def pythonOutputDir = "$projectDir/../dist".toString()
+def rootProjectDir = "$projectDir/../"
+def pythonOutputDir = "$rootProjectDir/dist".toString()
 
 task cleanPreviousDist(type: Delete) {
     group 'Criteo'
@@ -35,7 +36,7 @@ task copyExamples(type: Copy) {
     group 'Criteo'
     description 'Copy the Python examples into the dist folder'
 
-    from 'resources/python/examples'
+    from "$rootProjectDir/resources/python/examples"
     into "$pythonOutputDir/examples".toString()
 }
 
@@ -43,7 +44,7 @@ task copyLicense(type: Copy) {
     group 'Criteo'
     description 'Copy the license into the dist folder'
 
-    from 'LICENSE'
+    from "$rootProjectDir/LICENSE"
     into pythonOutputDir
     rename 'LICENSE', 'LICENSE.txt'
 }
@@ -52,7 +53,7 @@ task copyTests(type: Copy) {
     group 'Criteo'
     description 'Copy the Python tests into the dist folder'
 
-    from 'resources/python/tests/'
+    from "$rootProjectDir/resources/python/tests/"
     into "$pythonOutputDir/test/".toString()
 }
 
