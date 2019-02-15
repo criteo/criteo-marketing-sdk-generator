@@ -18,11 +18,3 @@ ext {
     apiVersion = '1.0'
     swaggerURL = 'https://api.criteo.com/marketing/swagger/docs/v.' + apiVersion
 }
-
-// deprecated
-task buildPythonClient(type: GradleBuild) {
-    group 'Criteo'
-    description 'Generate the Python client using openapi-generator and custom templates (deprecated, please use :build-python:generateClient)'
-
-    tasks = ['build-python:generateClient']
-}
