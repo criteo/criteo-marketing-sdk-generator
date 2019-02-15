@@ -7,6 +7,7 @@ env:
 
 script:
   - ./gradlew buildPythonClient -Dorg.gradle.project.buildNumber=$TRAVIS_BUILD_NUMBER
+  - ./gradlew :build-java:generateClient
 
 branches:
   only:
