@@ -11,7 +11,7 @@ buildscript {
 
 apply plugin: 'org.openapi.generator'
 
-def clientOutputDir = "$projectDir/../generated-clients/java-clients".toString()
+def clientOutputDir = "$projectDir/../generated-clients/java".toString()
 
 task generateClient(type: GradleBuild) {
     group "Criteo"
