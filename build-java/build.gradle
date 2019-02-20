@@ -20,8 +20,25 @@ task generateClient(type: GradleBuild) {
     tasks = ['openApiGenerate']
 }
 
+def clientPatch = hasProperty('buildNumber') ? buildNumber : '0'
+
 openApiGenerate {
     generatorName = "java"
     inputSpec = rootProject.swaggerURL
     outputDir = clientOutputDir
+    removeOperationIdPrefix = true
+    generateApiTests = false
+    generateModelTests = false
+    configOptions = [
+            groupId                : 'com.criteo',
+            artifactId             : 'marketing.java-client',
+            apiPackage             : 'com.criteo.marketing.api',
+            modelPackage           : 'com.criteo.marketing.model',
+            artifactUrl            : 'https://github.com/criteo/criteo-java-marketing-sdk',
+            packageVersion         : "$apiVersion.$clientPatch".toString(),
+            hideGenerationTimestamp: 'true',
+            licenseName            : 'Apache License, version 2.0',
+            dateLibrary            : 'java8',
+            useGzipFeature         : 'true'
+    ]
 }
