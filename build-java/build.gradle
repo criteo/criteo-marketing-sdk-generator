@@ -13,11 +13,19 @@ apply plugin: 'org.openapi.generator'
 
 def clientOutputDir = "$projectDir/../generated-clients/java".toString()
 
+task cleanPreviousJavaBuild(type: Delete) {
+    group 'Criteo'
+    description 'Clean up generated java client output folder'
+
+    delete clientOutputDir
+    followSymlinks = true
+}
+
 task generateClient(type: GradleBuild) {
     group "Criteo"
     description 'Generate the Java client using openapi-generator and custom templates'
 
-    tasks = ['openApiGenerate']
+    tasks = ['cleanPreviousJavaBuild', 'openApiGenerate']
 }
 
 def clientPatch = hasProperty('buildNumber') ? buildNumber : '0'
