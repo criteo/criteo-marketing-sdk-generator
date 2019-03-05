@@ -6,7 +6,7 @@ To generate the Python code, run:
 ```bash 
 ./gradlew :build-python:generateClient -Dorg.gradle.project.buildNumber=$TRAVIS_BUILD_NUMBER
 ```
-The generated code can be found under `dist` folder.
+The generated code can be found under `generated-clients/python` folder.
 
 To generate the Java code, run:
 
@@ -19,7 +19,7 @@ The generated code can be found under `generated-clients/java` folder.
 ## Modify templates
 You can modify the generated code by changing the templates.
 For example, the authentication token auto refresh feature is implemented in 
-`templates/PythonCriteo/rest.mustache`.
+`build-python/resources/templates/rest.mustache`.
 
 If a template is missing, you can copy it from the original repository [Python templates](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/python).
 

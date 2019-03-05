@@ -21,12 +21,13 @@ ext {
     jar.enabled = false
 }
 
+def resourceDir = "$projectDir/resources/"
 def rootProjectDir = "$projectDir/../"
-def pythonOutputDir = "$rootProjectDir/dist".toString()
+def pythonOutputDir = "$rootProjectDir/generated-clients/python".toString()
 
 task cleanPreviousDist(type: Delete) {
     group 'Criteo'
-    description 'Clean up dist folder'
+    description 'Clean up python output folder'
 
     delete pythonOutputDir
     followSymlinks = true
@@ -34,15 +35,15 @@ task cleanPreviousDist(type: Delete) {
 
 task copyExamples(type: Copy) {
     group 'Criteo'
-    description 'Copy the Python examples into the dist folder'
+    description 'Copy the Python examples into the python output folder'
 
-    from "$rootProjectDir/resources/python/examples"
+    from "$resourceDir/examples"
     into "$pythonOutputDir/examples".toString()
 }
 
 task copyLicense(type: Copy) {
     group 'Criteo'
-    description 'Copy the license into the dist folder'
+    description 'Copy the license into the python output folder'
 
     from "$rootProjectDir/LICENSE"
     into pythonOutputDir
@@ -51,9 +52,9 @@ task copyLicense(type: Copy) {
 
 task copyTests(type: Copy) {
     group 'Criteo'
-    description 'Copy the Python tests into the dist folder'
+    description 'Copy the Python tests into the python output folder'
 
-    from "$rootProjectDir/resources/python/tests/"
+    from "$resourceDir/tests/"
     into "$pythonOutputDir/test/".toString()
 }
 
@@ -78,7 +79,7 @@ def clientPatch = hasProperty('buildNumber') ? buildNumber : '0'
 
 openApiGenerate {
     generatorName = "python"
-    templateDir = "$projectDir/../templates/PythonCriteo".toString()
+    templateDir = "$resourceDir/templates/".toString()
     inputSpec = rootProject.swaggerURL
     outputDir = pythonOutputDir
     removeOperationIdPrefix = true
