@@ -59,6 +59,9 @@ import {{invokerPackage}}.auth.RetryingOAuth;
 import {{invokerPackage}}.auth.OAuthFlow;
 {{/hasOAuthMethods}}
 
+import com.criteo.marketing.api.AuthenticationApi;
+import com.criteo.marketing.model.InlineResponse200;
+
 public class ApiClient {
 
     private String basePath = "{{{basePath}}}";
@@ -67,6 +70,7 @@ public class ApiClient {
     private String tempFolderPath = null;
 
     private Map<String, Authentication> authentications;
+    private TokenInfo tokenInfo;
 
     private DateFormat dateFormat;
     private DateFormat datetimeFormat;
@@ -92,6 +96,7 @@ public class ApiClient {
         authentications.put("{{name}}", new HttpBasicAuth());{{/isBasic}}{{#isApiKey}}
         authentications.put("{{name}}", new ApiKeyAuth({{#isKeyInHeader}}"header"{{/isKeyInHeader}}{{^isKeyInHeader}}"query"{{/isKeyInHeader}}, "{{keyParamName}}"));{{/isApiKey}}{{#isOAuth}}
         authentications.put("{{name}}", new OAuth());{{/isOAuth}}{{/authMethods}}
+        authentications.put("CriteoHttpBasicAuth", new HttpBasicAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }
@@ -1092,6 +1097,13 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        if (!"/oauth2/token".equals(path)) {
+            String token = headerParams.get("Authorization"); // token provided by user code
+            if (token == null || token.isEmpty()) {
+                refreshTokenIfNotValid();
+            }
+        }
+
         updateParamsForAuth(authNames, queryParams, headerParams);
 
         final String url = buildUrl(path, queryParams, collectionQueryParams);
@@ -1341,6 +1353,34 @@ public class ApiClient {
             return keyStore;
         } catch (IOException e) {
             throw new AssertionError(e);
+        }
+    }
+
+    private static class TokenInfo {
+        private static long DURATION_BEFORE_REFRESH = 15;
+
+        private long expiresOn;
+
+        public TokenInfo(long expiresOn) {
+            this.expiresOn = expiresOn;
+        }
+
+        public boolean isValid() {
+            return expiresOn - (System.currentTimeMillis() / 1000) < DURATION_BEFORE_REFRESH;
+        }
+    }
+
+    private void refreshTokenIfNotValid() throws ApiException {
+        if (tokenInfo == null || !tokenInfo.isValid()) {
+            HttpBasicAuth auth = (HttpBasicAuth)authentications.get("CriteoHttpBasicAuth");
+            if (auth.getUsername() == null || auth.getPassword() == null) {
+                throw new ApiException("username or password is not present.");
+            }
+            InlineResponse200 response = (new AuthenticationApi(this)).oAuth2TokenPost(
+                    auth.getUsername(), auth.getPassword(), "client_credentials");
+            tokenInfo = new TokenInfo(response.getExpiresIn() + System.currentTimeMillis() / 1000);
+            this.setApiKeyPrefix(response.getTokenType());
+            this.setApiKey(response.getAccessToken());
         }
     }
 }
