@@ -12,6 +12,9 @@ buildscript {
 apply plugin: 'org.openapi.generator'
 
 def clientOutputDir = "$projectDir/../generated-clients/java".toString()
+def resourcesDir = "$projectDir/resources".toString()
+def basePackage = "com.criteo.marketing"
+def basePackagePath = basePackage.replace(".", "/")
 
 task cleanPreviousJavaBuild(type: Delete) {
     group 'Criteo'
@@ -21,11 +24,21 @@ task cleanPreviousJavaBuild(type: Delete) {
     followSymlinks = true
 }
 
+task copyExamples(type: Copy) {
+    from "$resourcesDir/examples"
+    into "$clientOutputDir/src/examples/java/$basePackagePath/".toString()
+}
+
+task copyTests(type: Copy) {
+    from "$resourcesDir/tests/"
+    into "$clientOutputDir/src/test/java/$basePackagePath/".toString()
+}
+
 task generateClient(type: GradleBuild) {
     group "Criteo"
     description 'Generate the Java client using openapi-generator and custom templates'
 
-    tasks = ['cleanPreviousJavaBuild', 'openApiGenerate']
+    tasks = ['cleanPreviousJavaBuild', 'openApiGenerate', 'copyExamples', 'copyTests']
 }
 
 def clientPatch = hasProperty('buildNumber') ? buildNumber : '0'
@@ -41,8 +54,8 @@ openApiGenerate {
     configOptions = [
             groupId                  : 'com.criteo',
             artifactId               : 'marketing.java-client',
-            apiPackage               : 'com.criteo.marketing.api',
-            modelPackage             : 'com.criteo.marketing.model',
+            apiPackage               : "${basePackage}.api".toString(),
+            modelPackage             : "${basePackage}.model".toString(),
             artifactUrl              : 'https://github.com/criteo/criteo-java-marketing-sdk',
             artifactDescription      : 'Criteo Java Marketing SDK',
             scmConnection            : 'scm:git:git@github.com:criteo/criteo-java-marketing-sdk.git',
