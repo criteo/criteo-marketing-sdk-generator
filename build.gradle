@@ -8,12 +8,14 @@ buildscript {
 apply plugin: 'java-library'
 
 ext {
-    artifactId = "python-client-generator"
+    artifactId = "criteo-marketing-client-generator"
     groupId = "com.criteo.mapi"
     version = '1.0.0'
     description = 'Criteo Marketing API Clients Generator'
     sourceCompatibility = '1.8'
     jar.enabled = false
+
+    gereratedClientsDirName = 'generated-clients'
 
     apiVersion = '1.0'
     swaggerURL = 'https://api.criteo.com/marketing/swagger/docs/v.' + apiVersion
