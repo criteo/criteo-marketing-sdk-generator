@@ -30,7 +30,7 @@ REPO=criteo/criteo-python-marketing-sdk
 git_clone ${REPO}
 cd ${BUILD_DIR}/${REPO}
 
-cp -R ${TRAVIS_BUILD_DIR}/dist/** .
+cp -R ${TRAVIS_BUILD_DIR}/generated-clients/python/** .
 
 # add files before doing the diff
 git_add_files

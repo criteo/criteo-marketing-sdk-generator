@@ -11,14 +11,14 @@ buildscript {
 
 apply plugin: 'org.openapi.generator'
 
-def clientOutputDir = "$projectDir/../generated-clients/java".toString()
+def clientOutputDir = "$projectDir/../$rootProject.gereratedClientsDirName/java".toString()
 def resourcesDir = "$projectDir/resources".toString()
 def basePackage = "com.criteo.marketing"
 def basePackagePath = basePackage.replace(".", "/")
 
 task cleanPreviousJavaBuild(type: Delete) {
     group 'Criteo'
-    description 'Clean up generated java client output folder'
+    description 'Clean up generated client output folder'
 
     delete clientOutputDir
     followSymlinks = true
@@ -45,7 +45,7 @@ def clientPatch = hasProperty('buildNumber') ? buildNumber : '0'
 
 openApiGenerate {
     generatorName = "java"
-    templateDir = "$projectDir/../templates/JavaCriteo".toString()
+    templateDir = "$resourcesDir/templates/".toString()
     inputSpec = rootProject.swaggerURL
     outputDir = clientOutputDir
     removeOperationIdPrefix = true
