@@ -11,7 +11,16 @@ setup_git() {
 }
 
 git_add_files() {
-  git add "**/*.py" "**/*.md"
+
+  if [[ $1 = "java" ]]; then
+    extension="java"
+  elif [[ $1 = "python" ]]; then
+    extension="py"
+  else
+    exit -1
+  fi
+
+  git add "**/*."${extension} "**/*.md"
 }
 
 git_commit() {
@@ -22,27 +31,35 @@ git_push() {
   git push --quiet
 }
 
+process() {
+  cd ${BUILD_DIR}/criteo
+  REPO=criteo/criteo-$1-marketing-sdk
+  git_clone ${REPO}
+  cd ${BUILD_DIR}/${REPO}
 
+  cp -R ${TRAVIS_BUILD_DIR}/generated-clients/$1/** .
+
+  # add files before doing the diff
+  git_add_files $1
+
+  # git diff, ignore version's modifications
+  modification_count=$(git diff -U0 --staged | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
+
+  if [[ ${modification_count} != 0 ]]; then
+      setup_git
+      git_commit
+      git_push
+  else
+      echo No push to Github. Modifications:
+      git diff -U0
+  fi
+}
+
+LANGUAGES=("python" "java")
 BUILD_DIR=${HOME}/build
 
-cd ${BUILD_DIR}/criteo
-REPO=criteo/criteo-python-marketing-sdk
-git_clone ${REPO}
-cd ${BUILD_DIR}/${REPO}
-
-cp -R ${TRAVIS_BUILD_DIR}/generated-clients/python/** .
-
-# add files before doing the diff
-git_add_files
-
-# git diff, ignore version's modifications
-modification_count=$(git diff -U0 --staged | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
-
-if [[ ${modification_count} != 0 ]]; then
-    setup_git
-    git_commit
-    git_push
-else
-    echo No push to Github. Modifications:
-    git diff -U0
-fi
+for var in "${LANGUAGES[@]}"
+do
+  echo "Starting upload for - ${var}"
+  process $var
+done
