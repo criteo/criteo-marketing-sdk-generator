@@ -23,6 +23,8 @@ git_add_files() {
   case "${1}" in
     java)
       files_to_add="**/*.java **/*.md"
+      files_to_add="${files_to_add} pom.xml *.gradle gradlew gradlew.bat gradle/"
+      files_to_add="${files_to_add} LICENSE.txt .gitignore .openapi-generator/"
       ;;
     python)
       files_to_add="**/*.py **/*.md"
