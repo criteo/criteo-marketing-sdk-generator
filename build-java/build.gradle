@@ -72,11 +72,12 @@ openApiGenerate {
     generateModelTests = false
     configOptions = [
             groupId                  : 'com.criteo',
-            artifactId               : 'marketing.java-client',
             apiPackage               : "${basePackage}.api".toString(),
-            modelPackage             : "${basePackage}.model".toString(),
-            artifactUrl              : 'https://github.com/criteo/criteo-java-marketing-sdk',
+            artifactId               : 'marketing.java-client',
+            artifactVersion          : "$apiVersion.$clientPatch".toString(),
             artifactDescription      : 'Criteo Java Marketing SDK',
+            artifactUrl              : 'https://github.com/criteo/criteo-java-marketing-sdk',
+            modelPackage             : "${basePackage}.model".toString(),
             scmConnection            : 'scm:git:git@github.com:criteo/criteo-java-marketing-sdk.git',
             scmDeveloperConnection   : 'scm:git:git@github.com:criteo/criteo-java-marketing-sdk.git',
             scmUrl                   : 'https://github.com/criteo/criteo-java-marketing-sdk',
@@ -87,7 +88,6 @@ openApiGenerate {
             licenseName              : 'Apache License, version 2.0',
             licenseUrl               : 'https://www.apache.org/licenses/LICENSE-2.0',
             hideGenerationTimestamp  : 'true',
-            packageVersion           : "$apiVersion.$clientPatch".toString(),
             dateLibrary              : 'java8',
     ]
 }

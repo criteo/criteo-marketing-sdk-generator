@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
-set -x
+set -ex
+
+SCRIPT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [[ $1 != "" ]]; then
+    BUILD_NUMBER=$1
+else
+    echo "Usage: $0 BUILD_NUMBER"
+    exit 1
+fi
 
 git_clone() {
   git clone --depth 1 https://${GH_TOKEN}@github.com/$1.git
@@ -11,43 +20,57 @@ setup_git() {
 }
 
 git_add_files() {
+  case "${1}" in
+    java)
+      files_to_add="**/*.java **/*.md"
+      ;;
+    python)
+      files_to_add="**/*.py **/*.md"
+      ;;
+    *)
+      exit 1
+      ;;
+  esac
 
-  if [[ $1 = "java" ]]; then
-    extension="java"
-  elif [[ $1 = "python" ]]; then
-    extension="py"
-  else
-    exit -1
-  fi
-
-  git add "**/*."${extension} "**/*.md"
+  git add ${files_to_add}
 }
 
-git_commit() {
-  git commit -am "Automatic update of SDK - $TRAVIS_BUILD_NUMBER"
+git_commit_and_tag() {
+  version=$1
+  if [[ ${version} == "" ]]; then
+    echo "version is not defined"
+    exit 1
+  fi
+  git commit -am "Automatic update of SDK - ${version}" && git tag ${version}
 }
 
 git_push() {
-  git push --quiet
+  if [[ ${USER} == "travis" ]]; then
+    git push --quiet && git push --tags --quiet
+  else
+    echo "Only user travis should be able to push."
+  fi
 }
 
 process() {
+  language=$1
   cd ${BUILD_DIR}/criteo
-  REPO=criteo/criteo-$1-marketing-sdk
+  REPO=criteo/criteo-${language}-marketing-sdk
   git_clone ${REPO}
   cd ${BUILD_DIR}/${REPO}
 
-  cp -R ${TRAVIS_BUILD_DIR}/generated-clients/$1/** .
+  cp -R ${SCRIPT_ROOT}/../generated-clients/${language}/ .
 
   # add files before doing the diff
-  git_add_files $1
+  git_add_files ${language}
 
   # git diff, ignore version's modifications
   modification_count=$(git diff -U0 --staged | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
+  next_version=$(cat "/tmp/travis_${BUILD_NUMBER}-build_sdk-${language}.version")
 
-  if [[ ${modification_count} != 0 ]]; then
+  if [[ ${modification_count} != 0 && ${next_version} != "" ]]; then
       setup_git
-      git_commit
+      git_commit_and_tag ${next_version}
       git_push
   else
       echo No push to Github. Modifications:
@@ -55,11 +78,12 @@ process() {
   fi
 }
 
-LANGUAGES=("python" "java")
 BUILD_DIR=${HOME}/build
 
-for var in "${LANGUAGES[@]}"
+LANGUAGES=("python" "java")
+
+for language in "${LANGUAGES[@]}"
 do
-  echo "Starting upload for - ${var}"
-  process $var
+  echo "Starting upload for - ${language}"
+  process ${language}
 done
