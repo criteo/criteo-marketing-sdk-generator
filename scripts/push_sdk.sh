@@ -60,7 +60,13 @@ process() {
   git_add_files ${language}
 
   # git diff, ignore version's modifications
-  modification_count=$(git diff -U0 --staged | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | grep -Ev 'version|VERSION|Version|user_agent' | wc -l)
+  modification_count=$(git diff -U0 --staged \
+                         | grep '^[+-]' \
+                         | grep -Ev '^(--- a/|\+\+\+ b/)' \
+                         | grep -Ev 'version|VERSION|Version' \
+                         | grep -Ev 'user_agent|UserAgent' \
+                         | grep -Ev 'marketing\.java-client.+[0-9]\.[0-9]\.[0-9]' \
+                         | wc -l)
   next_version=$(cat "/tmp/travis_${BUILD_NUMBER}-build_sdk-${language}.version")
 
   if [[ ${modification_count} != 0 && ${next_version} != "" ]]; then
