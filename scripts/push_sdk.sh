@@ -66,7 +66,7 @@ process() {
                          | grep -Ev 'version|VERSION|Version' \
                          | grep -Ev 'user_agent|UserAgent' \
                          | grep -Ev 'marketing\.java-client.+[0-9]\.[0-9]\.[0-9]' \
-                         | wc -l)
+                         | wc -l | tr -d '[:space:]')
   next_version=$(cat "/tmp/travis_${BUILD_NUMBER}-build_sdk-${language}.version")
 
   if [[ ${modification_count} != 0 && ${next_version} != "" ]]; then
