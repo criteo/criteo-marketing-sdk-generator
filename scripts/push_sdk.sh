@@ -20,21 +20,14 @@ setup_git() {
 }
 
 git_add_files() {
-  case "${1}" in
-    java)
-      files_to_add="**/*.java **/*.md"
-      files_to_add="${files_to_add} pom.xml *.gradle gradlew gradlew.bat gradle/"
-      files_to_add="${files_to_add} LICENSE.txt .gitignore .openapi-generator/"
-      ;;
-    python)
-      files_to_add="**/*.py **/*.md"
-      ;;
-    *)
-      exit 1
-      ;;
-  esac
-
-  git add ${files_to_add}
+  GIT_TRACK_FILE="${SCRIPT_ROOT}/git-track/${1}.txt"
+  if [[ -f ${GIT_TRACK_FILE} ]]; then
+      files_to_add=$(cat ${GIT_TRACK_FILE} | grep -Ev "^\s*#|^\s*$" | tr '\n' ' ')
+      git add ${files_to_add}
+  else
+    echo "'${GIT_TRACK_FILE}' does not exists, no files to add."
+    exit 1
+  fi
 }
 
 git_commit_and_tag() {
