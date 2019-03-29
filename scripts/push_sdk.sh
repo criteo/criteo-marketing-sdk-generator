@@ -61,7 +61,7 @@ process() {
   git_clone ${REPO}
   cd ${BUILD_DIR}/${REPO}
 
-  cp -R ${SCRIPT_ROOT}/../generated-clients/${language}/ .
+  cp -r ${SCRIPT_ROOT}/../generated-clients/${language}/. .
 
   # add files before doing the diff
   git_add_files ${language}
