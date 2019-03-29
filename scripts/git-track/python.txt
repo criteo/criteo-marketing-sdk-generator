@@ -1,0 +1,8 @@
+**/*.py
+**/*.md
+*.py
+*.md
+*.txt
+.gitignore
+.openapi-generator/
+tox.ini
