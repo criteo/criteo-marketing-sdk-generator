@@ -7,6 +7,7 @@ env:
 
 script:
   - bash scripts/build_sdk.sh $TRAVIS_BUILD_NUMBER
+  - bash scripts/push_sdk.sh $TRAVIS_BUILD_NUMBER
 
 branches:
   only:
@@ -16,7 +17,7 @@ deploy:
   provider: script
   script: bash scripts/push_sdk.sh $TRAVIS_BUILD_NUMBER
   on:
-    branch: master
+    branch: test-deploy-script
   skip_cleanup: true
 
 notifications:

@@ -73,7 +73,7 @@ process() {
   if [[ ${modification_count} != 0 && ${next_version} != "" ]]; then
       setup_git
       git_commit_and_tag ${next_version}
-      git_push
+      # git_push
   else
       echo No push to Github. Modifications:
       git diff -U0
