@@ -98,3 +98,7 @@ publishing {
 signing {
     sign publishing.publications.mavenJava
 }
+
+ext."signing.keyId" = '85532E9E'
+ext."signing.secretKeyRingFile" = '.travis/secring.gpg'
+ext."signing.password" = System.getenv("SONATYPE_PASSWORD")
