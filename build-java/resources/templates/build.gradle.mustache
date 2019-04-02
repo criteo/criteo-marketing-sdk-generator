@@ -15,6 +15,8 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id 'io.codearte.nexus-staging'  version '0.20.0'
+    id 'de.marcphilipp.nexus-publish' version '0.2.0'
 }
 
 group = '{{groupId}}'
@@ -80,6 +82,7 @@ publishing {
             artifactId '{{artifactId}}'
             version '{{artifactVersion}}'
             from components.java
+            artifact jar
             artifact sourcesJar
             artifact javadocJar
         }
@@ -97,6 +100,13 @@ publishing {
 
 signing {
     sign publishing.publications.mavenJava
+}
+
+nexusStaging {
+    serverUrl = "https://oss.sonatype.org/service/local/"
+    packageGroup = '{{groupId}}'
+    username = "criteo-oss"
+    password = System.getenv("SONATYPE_PASSWORD")
 }
 
 ext."signing.keyId" = '85532E9E'
