@@ -106,6 +106,8 @@ nexusStaging {
     packageGroup = '{{groupId}}'
     username = "criteo-oss"
     password = System.getenv("SONATYPE_PASSWORD")
+    numberOfRetries = 50
+    delayBetweenRetriesInMillis = 3000
 }
 
 ext."signing.keyId" = '85532E9E'
