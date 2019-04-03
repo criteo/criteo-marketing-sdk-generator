@@ -84,6 +84,33 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
+
+            pom {
+                packaging = 'jar'
+                name = '{{groupId}}:{{artifactId}}'
+                description = '{{artifactDescription}}'
+                url = '{{artifactUrl}}'
+                licenses {
+                    license {
+                        name = '{{licenseName}}'
+                        url = '{{licenseUrl}}'
+                    }
+                }
+                developers {
+                    developer {
+                        name = '{{developerName}}'
+                        email = '{{developerEmail}}'
+                        url = '{{developerOrganizationUrl}}'
+                        organization = '{{developerOrganization}}'
+                        organizationUrl = '{{developerOrganizationUrl}}'
+                    }
+                }
+                scm {
+                    connection = '{{scmConnection}}'
+                    developerConnection = '{{scmDeveloperConnection}}'
+                    url = '{{scmUrl}}'
+                }
+            }
         }
     }
     repositories {
