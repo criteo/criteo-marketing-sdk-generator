@@ -1,5 +1,5 @@
-**/*.java
-**/*.md
+src/
+docs/
 *.md
 *.gradle
 .gitignore

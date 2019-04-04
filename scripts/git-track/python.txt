@@ -1,5 +1,7 @@
-**/*.py
-**/*.md
+criteo_marketing/
+docs/
+examples/
+test/
 *.py
 *.md
 *.txt
