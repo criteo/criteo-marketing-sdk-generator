@@ -50,11 +50,14 @@ git_push() {
 process() {
   language=$1
   cd ${BUILD_DIR}/criteo
-  REPO=criteo/criteo-${language}-marketing-sdk
+  REPO="criteo/criteo-${language}-marketing-sdk"
   git_clone ${REPO}
-  cd ${BUILD_DIR}/${REPO}
 
-  cp -r ${SCRIPT_ROOT}/../generated-clients/${language}/. .
+  NEXT_CLIENT="NEXT_criteo-${language}-marketing-sdk"
+  cp -r "${SCRIPT_ROOT}/../generated-clients/${language}" ${NEXT_CLIENT}
+  cp -r "${BUILD_DIR}/${REPO}/.git" ${NEXT_CLIENT}
+
+  cd ${NEXT_CLIENT}
 
   # add files before doing the diff
   git_add_files ${language}
