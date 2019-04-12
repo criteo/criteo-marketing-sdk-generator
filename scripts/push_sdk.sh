@@ -36,7 +36,7 @@ git_commit_and_tag() {
     echo "version is not defined"
     exit 1
   fi
-  git commit -am "Automatic update of SDK - ${version}" && git tag ${version}
+  git commit -m "Automatic update of SDK - ${version}" && git tag ${version}
 }
 
 git_push() {
