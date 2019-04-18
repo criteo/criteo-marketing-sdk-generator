@@ -41,7 +41,7 @@ git_commit_and_tag() {
 
 git_push() {
   if [[ ${USER} == "travis" ]]; then
-    git push --quiet && git push --tags --quiet
+    git push origin --tags --quiet && git push origin --quiet
   else
     echo "Only user travis should be able to push."
   fi
