@@ -22,7 +22,8 @@ get_next_patch_number() {
                     | awk '{print $2}' \
                     | grep -E "^refs\/tags\/v${API_VERSION}.[0-9]+$" \
                     | sed -E "s/^refs\/tags\/v${API_VERSION}.([0-9]+)$/\1/g" \
-                    | sort -r | head -n1)
+                    | sort -g -r \
+                    | head -n1)
     if [[ ${latestPatch} == "" ]]; then
         echo "No tag started with 'v${API_VERSION}.' was found in '$1'."
         NEXT_PATCH_NUMBER=0
