@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 
 import {{invokerPackage}}.auth.Authentication;
 import {{invokerPackage}}.auth.HttpBasicAuth;
+import {{invokerPackage}}.auth.HttpBearerAuth;
 import {{invokerPackage}}.auth.ApiKeyAuth;
 {{#hasOAuthMethods}}
 import {{invokerPackage}}.auth.OAuth;
@@ -92,8 +93,9 @@ public class ApiClient {
     public ApiClient() {
         init();
 
-        // Setup authentications (key: authentication name, value: authentication).{{#authMethods}}{{#isBasic}}
-        authentications.put("{{name}}", new HttpBasicAuth());{{/isBasic}}{{#isApiKey}}
+        // Setup authentications (key: authentication name, value: authentication).{{#authMethods}}{{#isBasic}}{{#isBasicBasic}}
+        authentications.put("{{name}}", new HttpBasicAuth());{{/isBasicBasic}}{{^isBasicBasic}}
+        authentications.put("{{name}}", new HttpBearerAuth("{{scheme}}"));{{/isBasicBasic}}{{/isBasic}}{{#isApiKey}}
         authentications.put("{{name}}", new ApiKeyAuth({{#isKeyInHeader}}"header"{{/isKeyInHeader}}{{^isKeyInHeader}}"query"{{/isKeyInHeader}}, "{{keyParamName}}"));{{/isApiKey}}{{#isOAuth}}
         authentications.put("{{name}}", new OAuth());{{/isOAuth}}{{/authMethods}}
         authentications.put("CriteoHttpBasicAuth", new HttpBasicAuth());
@@ -141,7 +143,9 @@ public class ApiClient {
     {{/oauthMethods}}
     {{/hasOAuthMethods}}
     private void init() {
-        httpClient = new OkHttpClient();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addNetworkInterceptor(getProgressInterceptor());
+        httpClient = builder.build();
 
         {{#useGzipFeature}}
         // Enable gzip request compression
@@ -188,13 +192,14 @@ public class ApiClient {
     }
 
     /**
-     * Set HTTP client
+     * Set HTTP client, which must never be null.
      *
-     * @param httpClient An instance of OkHttpClient
+     * @param newHttpClient An instance of OkHttpClient
      * @return Api Client
+     * @throws NullPointerException when newHttpClient is null
      */
-    public ApiClient setHttpClient(OkHttpClient httpClient) {
-        this.httpClient = httpClient;
+    public ApiClient setHttpClient(OkHttpClient newHttpClient) {
+        this.httpClient = Objects.requireNonNull(newHttpClient, "HttpClient must not be null!");
         return this;
     }
 
@@ -1071,12 +1076,12 @@ public class ApiClient {
      * @param headerParams The header parameters
      * @param formParams The form parameters
      * @param authNames The authentications to apply
-     * @param progressRequestListener Progress request listener
+     * @param callback Callback for upload/download progress
      * @return The HTTP call
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, formParams, authNames, progressRequestListener);
+    public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
+        Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, formParams, authNames, callback);
 
         return httpClient.newCall(request);
     }
@@ -1092,11 +1097,11 @@ public class ApiClient {
      * @param headerParams The header parameters
      * @param formParams The form parameters
      * @param authNames The authentications to apply
-     * @param progressRequestListener Progress request listener
+     * @param callback Callback for upload/download progress
      * @return The HTTP request
      * @throws ApiException If fail to serialize the request body object
      */
-    public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
         if (!"/oauth2/token".equals(path)) {
             String explicitUserToken = headerParams.get("Authorization");
             if (explicitUserToken == null || explicitUserToken.isEmpty()) {
@@ -1135,10 +1140,14 @@ public class ApiClient {
             reqBody = serialize(body, contentType);
         }
 
+        // Associate callback with request (if not null) so interceptor can
+        // access it when creating ProgressResponseBody
+        reqBuilder.tag(callback);
+
         Request request = null;
 
-        if (progressRequestListener != null && reqBody != null) {
-            ProgressRequestBody progressRequestBody = new ProgressRequestBody(reqBody, progressRequestListener);
+        if (callback != null && reqBody != null) {
+            ProgressRequestBody progressRequestBody = new ProgressRequestBody(reqBody, callback);
             request = reqBuilder.method(method, progressRequestBody).build();
         } else {
             request = reqBuilder.method(method, reqBody).build();
@@ -1280,6 +1289,27 @@ public class ApiClient {
         } else {
             return contentType;
         }
+    }
+
+    /**
+     * Get network interceptor to add it to the httpClient to track download progress for
+     * async requests.
+     */
+    private Interceptor getProgressInterceptor() {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                final Request request = chain.request();
+                final Response originalResponse = chain.proceed(request);
+                if (request.tag() instanceof ApiCallback) {
+                    final ApiCallback callback = (ApiCallback) request.tag();
+                    return originalResponse.newBuilder()
+                        .body(new ProgressResponseBody(originalResponse.body(), callback))
+                        .build();
+                }
+                return originalResponse;
+            }
+        };
     }
 
     /**
