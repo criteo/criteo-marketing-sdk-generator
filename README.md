@@ -1,5 +1,7 @@
 # Criteo Marketing API - Clients
 [![Build Status](https://travis-ci.com/criteo/criteo-marketing-sdk-generator.svg?branch=master)](https://travis-ci.com/criteo/criteo-marketing-sdk-generator)
+
+This project generates code for the [Java](https://github.com/criteo/criteo-java-marketing-sdk) and [Python](https://github.com/criteo/criteo-python-marketing-sdk) Marketing client libraries.
 ## Generate the clients
 To generate the Python code, run:
 
