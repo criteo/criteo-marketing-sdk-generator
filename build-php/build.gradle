@@ -13,10 +13,10 @@ apply plugin: 'java-library'
 apply plugin: 'org.openapi.generator'
 
 ext {
-    artifactId = "python-client-generator"
+    artifactId = "php-client-generator"
     groupId = "com.criteo.mapi"
     version = '1.0.0'
-    description = 'Criteo Generator for Python Client'
+    description = 'Criteo Generator for PHP Client'
     sourceCompatibility = '1.8'
     jar.enabled = false
 }
