@@ -37,7 +37,7 @@ task copyExamples(type: Copy) {
     description 'Copy the PHP examples into the client output folder'
 
     from "$resourcesDir/examples"
-    into "$clientOutputDir/examples".toString()
+    into "$clientOutputDir/examples"
 }
 
 task copyLicense(type: Copy) {
@@ -54,7 +54,7 @@ task copyTests(type: Copy) {
     description 'Copy the PHP tests into the client output folder'
 
     from "$resourcesDir/tests/"
-    into "$clientOutputDir/test/".toString()
+    into "$clientOutputDir/test/"
 }
 
 task copyExtraSources(type: Copy) {
@@ -62,7 +62,7 @@ task copyExtraSources(type: Copy) {
     description 'Copy the PHP custom client into the lib client output folder'
 
     from "$resourcesDir/extra-src/"
-    into "$clientOutputDir/lib/".toString()
+    into "$clientOutputDir/lib/"
 }
 
 task removeUnwantedFiles(type: Delete) {
