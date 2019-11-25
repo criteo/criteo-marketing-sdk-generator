@@ -32,7 +32,7 @@ get_next_patch_number() {
     fi
 }
 
-LANGUAGES=('python' 'java')
+LANGUAGES=('python' 'java' 'php')
 
 for language in "${LANGUAGES[@]}"
 do

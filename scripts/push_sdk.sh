@@ -84,7 +84,7 @@ process() {
 
 BUILD_DIR=${HOME}/build
 
-LANGUAGES=("python" "java")
+LANGUAGES=("python" "java" "php")
 
 for language in "${LANGUAGES[@]}"
 do
