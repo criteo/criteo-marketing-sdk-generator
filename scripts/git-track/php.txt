@@ -1,0 +1,10 @@
+lib/
+docs/
+examples/
+test/
+composer.json
+*.md
+*.txt
+.gitignore
+.openapi-generator/
+*.xml.dist
