@@ -71,16 +71,14 @@ Please follow the [installation procedure](#installation--usage) and then run th
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
-
 {{#apiInfo}}{{#apis}}{{#-first}}{{#operations}}{{#operation}}{{#-first}}
-{{> php_doc_auth_partial}}
-$apiInstance = new {{invokerPackage}}\Api\{{classname}}(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(){{#hasAuthMethods}},
-    $config{{/hasAuthMethods}}
-);
-{{#allParams}}${{paramName}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
+$clientId = 'YOUR_CLIENT_ID';
+$clientCredentials = 'YOUR_PASSWORD';
+
+// Automatic token refresh
+$apiInstance = new {{invokerPackage}}\Api\{{classname}}(new TokenAutoRefreshClient($clientId, $clientCredentials));
+
+{{#allParams}}${{paramName}} = {{{example}}};
 {{/allParams}}
 
 try {
@@ -92,6 +90,8 @@ try {
 {{/-first}}{{/operation}}{{/operations}}{{/-first}}{{/apis}}{{/apiInfo}}
 ?>
 ```
+
+You can find the full example [here](examples/).
 
 ## Documentation for API Endpoints
 
@@ -148,6 +148,8 @@ All endpoints do not require authorization.
 {{/authMethods}}
 
 ## Author
+[Criteo](https://www.criteo.com/)
 
-{{#apiInfo}}{{#apis}}{{^hasMore}}{{infoEmail}}
-{{/hasMore}}{{/apis}}{{/apiInfo}}
+## Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
