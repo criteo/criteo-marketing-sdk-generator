@@ -1,3 +1,8 @@
+# This project is deprecated
+We've built a new set of SDKs to help you use our [Criteo's API](https://developers.criteo.com/).
+
+You can find the new generator project here : https://github.com/criteo/criteo-api-sdk-generator
+
 # Criteo Marketing API - Clients
 [![Build Status](https://travis-ci.com/criteo/criteo-marketing-sdk-generator.svg?branch=master)](https://travis-ci.com/criteo/criteo-marketing-sdk-generator)
 
